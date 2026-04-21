@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IssueTrace — 공정거래 의결서 AI 질의응답</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" as="style" onload="this.onload=null;this.rel='stylesheet'"
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand: #1454FE;
+      --brand-light: #EBF0FF;
+      --brand-hover: #0F44D4;
+      --text-primary: #111111;
+      --text-secondary: #474747;
+      --text-muted: #888888;
+      --border: #E5E7EB;
+      --bg: #ffffff;
+      --bg-soft: #F7F8FA;
+      --shadow-nav: 0 2px 16px rgba(0,0,0,0.08);
+      --shadow-card: 0 1px 4px rgba(0,0,0,0.06);
+      --shadow-card-hover: 0 4px 20px rgba(0,0,0,0.10);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    html { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif; }
+    body { background: var(--bg); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ── 내비게이션 ── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff;
+      box-shadow: var(--shadow-nav);
+      height: 64px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 32px;
+      height: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo-icon {
+      width: 36px; height: 36px;
+      background: var(--brand);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 18px;
+    }
+    .nav-logo-text {
+      font-size: 18px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.3px;
+    }
+    .nav-logo-sub {
+      font-size: 11px; color: var(--text-muted); font-weight: 400; margin-top: -2px;
+    }
+    .nav-status {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #D1D5DB;
+      transition: background 0.3s;
+    }
+    .status-dot.ok { background: #22C55E; }
+    .status-dot.err { background: #EF4444; }
+
+    /* ── 메인 레이아웃 ── */
+    .main {
+      max-width: 1200px; margin: 0 auto;
+      padding: 40px 32px 80px;
+      display: grid;
+      grid-template-columns: 1fr 296px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ── 섹션 타이틀 ── */
+    .section-label {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* ── 카드 ── */
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+    }
+
+    /* ── 검색 박스 ── */
+    .search-card {
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .search-card h2 {
+      font-size: 22px; font-weight: 700;
+      letter-spacing: -0.5px; margin-bottom: 6px;
+    }
+    .search-card h2 span { color: var(--brand); }
+    .search-card p {
+      font-size: 14px; color: var(--text-muted); margin-bottom: 20px;
+    }
+    .textarea-wrap {
+      position: relative;
+    }
+    textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      line-height: 1.7;
+      resize: none;
+      color: var(--text-primary);
+      background: var(--bg-soft);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    textarea::placeholder { color: #AAAAAA; }
+    textarea:focus {
+      outline: none;
+      border-color: var(--brand);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(20, 84, 254, 0.12);
+    }
+    .char-count {
+      position: absolute; right: 12px; bottom: 10px;
+      font-size: 11px; color: var(--text-muted);
+    }
+
+    .example-chips {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px;
+    }
+    .chip {
+      font-size: 12px; font-weight: 500;
+      color: var(--brand);
+      background: var(--brand-light);
+      border-radius: 100px;
+      padding: 7px 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-align: center;
+      width: 100%;
+    }
+    .chip:hover { background: #D6E4FF; }
+
+    .search-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 16px;
+    }
+    .shortcut-hint {
+      font-size: 12px; color: var(--text-muted);
+    }
+    .kbd {
+      display: inline-block;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 11px;
+      font-family: 'SF Mono', 'Consolas', monospace;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+      font-size: 14px; font-weight: 600;
+      padding: 11px 28px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-primary:hover { background: var(--brand-hover); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* 진행 바 */
+    .progress-wrap { flex: 1; margin-right: 16px; display: none; }
+    .progress-track {
+      height: 4px; background: var(--bg-soft);
+      border-radius: 2px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0;
+      background: var(--brand);
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+    .progress-label { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+
+    /* ── 결과 영역 ── */
+    .result-area { display: none; }
+    .result-area.visible { display: block; }
+
+    /* 메타 바 */
+    .meta-bar {
+      display: flex; align-items: center; gap: 20px;
+      padding: 14px 20px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+    .meta-item { display: flex; align-items: center; gap: 6px; }
+    .meta-label { color: var(--text-muted); }
+    .meta-value { font-weight: 600; color: var(--text-primary); }
+    .meta-value.fast { color: #16A34A; }
+    .meta-value.mid { color: #D97706; }
+    .meta-value.slow { color: #DC2626; }
+    .meta-sep { color: var(--border); font-size: 16px; }
+
+    /* AI 답변 카드 */
+    .answer-card { padding: 28px; margin-bottom: 20px; }
+    .answer-card-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+    }
+    .model-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--brand-light);
+      color: var(--brand);
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 100px;
+      letter-spacing: 0.2px;
+    }
+    .answer-title { font-size: 16px; font-weight: 700; }
+    .answer-body {
+      font-size: 14px; color: var(--text-secondary);
+      line-height: 1.9; white-space: pre-wrap;
+    }
+    .answer-body strong { font-weight: 700; color: var(--text-primary); }
+    .answer-body ol { list-style: decimal; padding-left: 1.3em; margin: 8px 0; }
+    .answer-body ul { list-style: disc; padding-left: 1.3em; margin: 8px 0; }
+    .answer-body li { margin: 4px 0; }
+    .answer-body p { margin: 6px 0; }
+
+    /* 청크 섹션 */
+    .chunks-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .chunks-title { font-size: 16px; font-weight: 700; }
+    .chunks-count {
+      font-size: 12px; font-weight: 600;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 100px;
+      padding: 2px 9px;
+    }
+
+    /* 청크 카드 */
+    .chunk-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .chunk-card:hover {
+      border-color: #C7D7FE;
+      box-shadow: var(--shadow-card-hover);
+    }
+    .rank-badge {
+      flex-shrink: 0;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+    }
+    .rank-1 { background: #FEF3C7; color: #92400E; border: 1.5px solid #FDE68A; }
+    .rank-2 { background: #F1F5F9; color: #475569; border: 1.5px solid #E2E8F0; }
+    .rank-3 { background: #FEF9C3; color: #78350F; border: 1.5px solid #FEF08A; }
+    .rank-4, .rank-5 { background: var(--bg-soft); color: #6B7280; border: 1.5px solid var(--border); }
+
+    .chunk-body { flex: 1; min-width: 0; }
+    .chunk-title {
+      font-size: 14px; font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .chunk-tags { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    .tag {
+      font-size: 11px; font-weight: 500;
+      padding: 2px 8px; border-radius: 100px;
+    }
+    .tag-text { background: #EBF0FF; color: var(--brand); }
+    .tag-table { background: #D1FAE5; color: #065F46; }
+    .tag-section { background: #F3F4F6; color: #374151; }
+    .chunk-id-mono {
+      font-size: 10px; font-family: 'SF Mono', 'Consolas', monospace;
+      color: var(--text-muted); background: var(--bg-soft);
+      border-radius: 4px; padding: 1px 6px;
+    }
+    .chunk-preview {
+      font-size: 13px; color: var(--text-muted); line-height: 1.7;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .chunk-more {
+      font-size: 12px; color: var(--brand); margin-top: 6px; font-weight: 500;
+    }
+
+    /* ── 빈 상태 ── */
+    .empty-state {
+      background: var(--bg-soft);
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 60px 32px;
+      text-align: center;
+    }
+    .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .empty-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      max-width: 480px; margin: 0 auto;
+    }
+    .feature-item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .feature-item-icon { font-size: 22px; margin-bottom: 8px; }
+    .feature-item-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+    .feature-item-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+    /* ── 사이드바 ── */
+    .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+    .sidebar-card { padding: 20px; }
+    .sidebar-card-title {
+      font-size: 13px; font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sidebar-card-title-icon {
+      width: 24px; height: 24px;
+      background: var(--brand-light);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+
+    /* 통계 */
+    .stat-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: var(--text-muted); }
+    .stat-value { font-weight: 600; color: var(--text-primary); }
+    .stat-value.accent { color: var(--brand); }
+
+    /* 히스토리 */
+    .history-empty { font-size: 12px; color: var(--text-muted); font-style: italic; }
+    .history-item {
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .history-item:hover { background: var(--bg-soft); }
+    .history-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--brand); flex-shrink: 0;
+    }
+    .history-text { font-size: 12px; color: var(--text-secondary); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .history-time { font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
+
+    /* Chunk ID 패널 */
+    .chunk-id-item {
+      display: flex; align-items: center; gap: 8px; padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .chunk-id-item:last-child { border-bottom: none; }
+    .chunk-id-rank {
+      width: 20px; height: 20px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
+    }
+    .chunk-id-text {
+      font-size: 11px; font-family: 'SF Mono', 'Consolas', monospace;
+      color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .btn-copy {
+      font-size: 12px; font-weight: 600;
+      color: var(--brand);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #C7D7FE;
+      background: var(--brand-light);
+      transition: background 0.15s;
+    }
+    .btn-copy:hover { background: #D6E4FF; }
+
+    /* ── 모달 ── */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 200;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 680px; width: 100%;
+      max-height: 80vh; overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      animation: slideUp 0.2s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 24px 0;
+      margin-bottom: 14px;
+    }
+    .modal-title { font-size: 17px; font-weight: 700; }
+    .modal-close {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--bg-soft);
+      color: var(--text-muted);
+      font-size: 18px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .modal-close:hover { background: var(--border); }
+    .modal-chunk-id {
+      font-size: 11px; font-family: 'SF Mono', 'Consolas', monospace;
+      color: var(--text-muted);
+      background: var(--bg-soft);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin: 0 24px 14px;
+      word-break: break-all;
+    }
+    .modal-tags { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 24px 14px; }
+    .modal-content {
+      font-size: 14px; color: var(--text-secondary);
+      line-height: 1.85; white-space: pre-wrap;
+      padding: 0 24px 24px;
+    }
+    .modal-divider { border: none; border-top: 1px solid var(--border); margin: 0 24px 16px; }
+
+    /* ── 스피너 ── */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── 페이드인 ── */
+    .fade-in { animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── 푸터 ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      background: var(--bg-soft);
+      padding: 32px 0;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { font-size: 15px; font-weight: 700; }
+    .footer-copy { font-size: 12px; color: var(--text-muted); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-link { font-size: 12px; color: var(--text-muted); transition: color 0.15s; }
+    .footer-link:hover { color: var(--brand); }
+
+    /* 반응형 */
+    @media (max-width: 900px) {
+      .main { grid-template-columns: 1fr; padding: 24px 20px 60px; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 내비게이션 -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <div class="nav-logo-icon">⚖</div>
+        <div>
+          <div class="nav-logo-text">IssueTrace</div>
+          <div class="nav-logo-sub">공정거래 의결서 RAG</div>
+        </div>
+      </div>
+      <div class="nav-status">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">서버 확인 중...</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 메인 -->
+  <div class="main">
+
+    <!-- 왼쪽 콘텐츠 -->
+    <div class="content-area">
+
+      <!-- 검색 카드 -->
+      <div class="card search-card">
+        <h2>공정거래 의결서<br><span>AI 질의응답 검색</span></h2>
+        <p>500개 의결서 · 31,879개 청크를 Hybrid RAG로 검색합니다</p>
+
+        <div class="textarea-wrap">
+          <textarea
+            id="queryInput"
+            rows="3"
+            maxlength="500"
+            placeholder="예: BGF리테일의 판매촉진비용 위반 행위는 무엇인가요?"
+            oninput="updateCharCount(this)"
+          ></textarea>
+          <span class="char-count" id="charCount">0 / 500</span>
+        </div>
+
+        <div class="example-chips">
+          <button class="chip" onclick="setQuery(this)">BGF리테일 판매촉진비용 위반</button>
+          <button class="chip" onclick="setQuery(this)">담합 과징금 부과 사례</button>
+          <button class="chip" onclick="setQuery(this)">시장지배적 지위남용 시정명령</button>
+          <button class="chip" onclick="setQuery(this)">하도급법 위반 제재</button>
+          <button class="chip" onclick="setQuery(this)">전자상거래 소비자보호법 위반</button>
+          <button class="chip" onclick="setQuery(this)">기업결합 심사 불허 사례</button>
+          <button class="chip" onclick="setQuery(this)">사업자단체 금지행위 위반</button>
+          <button class="chip" onclick="setQuery(this)">불공정거래행위 과징금 부과</button>
+        </div>
+
+        <div class="search-footer">
+          <div id="progressWrap" class="progress-wrap">
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">처리 중...</div>
+          </div>
+          <div class="shortcut-hint" id="shortcutHint">
+            <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> 로 검색
+          </div>
+          <button class="btn-primary" id="searchBtn" onclick="runQuery()">
+            <svg id="btnIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span id="btnText">검색하기</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 결과 영역 -->
+      <div class="result-area fade-in" id="resultArea">
+
+        <!-- 메타 바 -->
+        <div class="meta-bar">
+          <div class="meta-item">
+            <span class="meta-label">응답 시간</span>
+            <span class="meta-value" id="elapsedBadge">—</span>
+          </div>
+          <span class="meta-sep">|</span>
+          <div class="meta-item">
+            <span class="meta-label">검색 모드</span>
+            <span class="meta-value">Hybrid BM25 + Solar + RRF</span>
+          </div>
+          <span class="meta-sep">|</span>
+          <div class="meta-item">
+            <span class="meta-label">생성 모델</span>
+            <span class="meta-value" id="genModelBadge">Solar-Pro</span>
+          </div>
+        </div>
+
+        <!-- AI 답변 -->
+        <div class="card answer-card">
+          <div class="answer-card-header">
+            <div class="answer-title">AI 생성 답변</div>
+            <div class="model-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              Solar-Pro
+            </div>
+          </div>
+          <div class="answer-body" id="answerText"></div>
+        </div>
+
+        <!-- 청크 목록 -->
+        <div>
+          <div class="chunks-header">
+            <div class="chunks-title">검색된 근거 문서</div>
+            <div class="chunks-count">Top 5</div>
+          </div>
+          <div id="chunksContainer"></div>
+        </div>
+
+      </div>
+
+      <!-- 빈 상태 -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">⚖️</div>
+        <div class="empty-title">공정거래 의결서를 검색해 보세요</div>
+        <div class="empty-desc">위 검색창에 질문을 입력하면 관련 의결서 청크와 AI 답변을 받을 수 있습니다</div>
+        <div class="feature-grid">
+          <div class="feature-item">
+            <div class="feature-item-icon">🔍</div>
+            <div class="feature-item-label">BM25 검색</div>
+            <div class="feature-item-sub">키워드 희소 검색</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-item-icon">🧠</div>
+            <div class="feature-item-label">Solar 임베딩</div>
+            <div class="feature-item-sub">의미 기반 밀집 검색</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-item-icon">⚡</div>
+            <div class="feature-item-label">RRF 결합</div>
+            <div class="feature-item-sub">하이브리드 재정렬</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+
+      <!-- 시스템 상태 -->
+      <div class="card sidebar-card" id="statsCard">
+        <div class="sidebar-card-title">
+          <div class="sidebar-card-title-icon">📊</div>
+          시스템 상태
+        </div>
+        <div id="statsArea">
+          <div class="stat-row">
+            <span class="stat-label">코퍼스</span>
+            <span class="stat-value">로딩 중...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 최근 검색 -->
+      <div class="card sidebar-card">
+        <div class="sidebar-card-title">
+          <div class="sidebar-card-title-icon">🕐</div>
+          최근 검색
+        </div>
+        <div id="historyList">
+          <div class="history-empty">검색 기록이 없습니다</div>
+        </div>
+      </div>
+
+      <!-- Chunk ID 패널 -->
+      <div class="card sidebar-card" id="chunkIdPanel" style="display:none;">
+        <div class="sidebar-card-title" style="justify-content: space-between;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="sidebar-card-title-icon">📋</div>
+            Chunk IDs
+          </div>
+          <button class="btn-copy" id="copyBtn" onclick="copyChunkIds()">복사</button>
+        </div>
+        <div id="chunkIdList"></div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- 푸터 -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">IssueTrace RAG</div>
+        <div class="footer-copy" style="margin-top:4px;">© 2025 IssueTrace · 공정거래위원회 의결서 AI 질의응답</div>
+      </div>
+      <div class="footer-links">
+        <a href="/docs" target="_blank" class="footer-link">API 문서</a>
+        <a href="/health" target="_blank" class="footer-link">서버 상태</a>
+        <a href="/stats" target="_blank" class="footer-link">통계</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 청크 상세 모달 -->
+  <div class="modal-backdrop" id="modal" onclick="closeModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">청크 상세</div>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-chunk-id" id="modalChunkId"></div>
+      <div class="modal-tags" id="modalMeta"></div>
+      <hr class="modal-divider" />
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+<script>
+const API = 'http://localhost:8001';
+let searchHistory = [];
+let lastChunkIds = [];
+
+// ── 초기화 ──────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    const [healthRes, statsRes] = await Promise.all([
+      fetch(`${API}/health`),
+      fetch(`${API}/stats`)
+    ]);
+    const health = await healthRes.json();
+    const stats = await statsRes.json();
+
+    // 상태 배지
+    document.getElementById('statusDot').classList.add('ok');
+    document.getElementById('statusText').textContent = `연결됨 · ${health.corpus_size.toLocaleString()}개 청크`;
+    document.getElementById('genModelBadge').textContent = health.generation_model;
+
+    // 통계
+    document.getElementById('statsArea').innerHTML = `
+      <div class="stat-row"><span class="stat-label">총 청크</span><span class="stat-value accent">${stats.total_chunks.toLocaleString()}개</span></div>
+      <div class="stat-row"><span class="stat-label">의결서</span><span class="stat-value accent">${stats.total_documents.toLocaleString()}건</span></div>
+      <div class="stat-row"><span class="stat-label">임베딩</span><span class="stat-value">${stats.embedding_provider}</span></div>
+      <div class="stat-row"><span class="stat-label">생성 모델</span><span class="stat-value">${stats.generation_model}</span></div>
+      <div class="stat-row"><span class="stat-label">BM25 후보</span><span class="stat-value">${stats.bm25_top_k}</span></div>
+      <div class="stat-row"><span class="stat-label">Dense 후보</span><span class="stat-value">${stats.dense_top_k}</span></div>
+      <div class="stat-row"><span class="stat-label">RRF k</span><span class="stat-value">${stats.rrf_k}</span></div>
+    `;
+  } catch (e) {
+    document.getElementById('statusDot').classList.add('err');
+    document.getElementById('statusText').textContent = '서버 연결 실패';
+    document.getElementById('statsArea').innerHTML = `
+      <div class="stat-row" style="color:#DC2626;font-size:12px;">서버를 먼저 시작하세요<br><code>python server.py</code></div>
+    `;
+  }
+}
+
+// ── 쿼리 실행 ──────────────────────────────────────────────────────────
+async function runQuery() {
+  const q = document.getElementById('queryInput').value.trim();
+  if (!q) {
+    document.getElementById('queryInput').focus();
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const res = await fetch(`${API}/query`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: q })
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errText}`);
+    }
+    const data = await res.json();
+    showResult(data);
+    addHistory(q, data.elapsed_sec);
+  } catch (e) {
+    alert(`오류가 발생했습니다:\n${e.message}`);
+  } finally {
+    setLoading(false);
+  }
+}
+
+function showResult(data) {
+  document.getElementById('emptyState').style.display = 'none';
+
+  const area = document.getElementById('resultArea');
+  area.classList.add('visible', 'fade-in');
+
+  // 응답 시간
+  const elapsed = data.elapsed_sec;
+  const elBadge = document.getElementById('elapsedBadge');
+  elBadge.textContent = `${elapsed}s`;
+  elBadge.className = 'meta-value ' + (elapsed < 10 ? 'fast' : elapsed < 20 ? 'mid' : 'slow');
+
+  // 답변
+  document.getElementById('answerText').innerHTML = renderMarkdown(data.answer);
+
+  // 청크 카드
+  lastChunkIds = data.chunk_ids;
+  const container = document.getElementById('chunksContainer');
+  container.innerHTML = '';
+  data.chunk_ids.forEach((cid, i) => {
+    container.appendChild(buildChunkCard(cid, i + 1, data.retrieved_chunks?.[i]));
+  });
+
+  // Chunk ID 패널
+  showChunkIdPanel(data.chunk_ids);
+
+  // 스크롤
+  document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildChunkCard(chunkId, rank, chunkData) {
+  const div = document.createElement('div');
+  div.className = 'chunk-card';
+
+  const docTitle = chunkData?.metadata?.doc_title || '의결서';
+  const section = chunkData?.metadata?.section || '';
+  const chunkType = chunkData?.metadata?.chunk_type || 'text';
+  const text = chunkData?.text || '';
+  const preview = text.replace(/\n+/g, ' ').trim();
+
+  div.innerHTML = `
+    <div class="rank-badge rank-${rank}">${rank}</div>
+    <div class="chunk-body">
+      <div class="chunk-title">${escHtml(docTitle)}</div>
+      <div class="chunk-tags">
+        <span class="tag ${chunkType === 'table' ? 'tag-table' : 'tag-text'}">${chunkType === 'table' ? '표' : '본문'}</span>
+        ${section ? `<span class="tag tag-section">${escHtml(section.slice(0, 30))}</span>` : ''}
+        <span class="chunk-id-mono">${escHtml(chunkId.slice(-18))}</span>
+      </div>
+      <div class="chunk-preview">${escHtml(preview)}</div>
+      <div class="chunk-more">전체 보기 →</div>
+    </div>
+  `;
+
+  div.addEventListener('click', () => openModal(chunkId, rank, chunkData));
+  return div;
+}
+
+function showChunkIdPanel(ids) {
+  const panel = document.getElementById('chunkIdPanel');
+  panel.style.display = 'block';
+  const list = document.getElementById('chunkIdList');
+  list.innerHTML = ids.map((id, i) => `
+    <div class="chunk-id-item">
+      <div class="chunk-id-rank">${i + 1}</div>
+      <div class="chunk-id-text">${escHtml(id)}</div>
+    </div>
+  `).join('');
+}
+
+function copyChunkIds() {
+  navigator.clipboard.writeText(JSON.stringify(lastChunkIds, null, 2)).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '복사됨 ✓';
+    setTimeout(() => btn.textContent = '복사', 2000);
+  });
+}
+
+// ── 히스토리 ──────────────────────────────────────────────────────────
+function addHistory(q, elapsed) {
+  searchHistory.unshift({ q, elapsed });
+  if (searchHistory.length > 8) searchHistory.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (searchHistory.length === 0) {
+    list.innerHTML = '<div class="history-empty">검색 기록이 없습니다</div>';
+    return;
+  }
+  list.innerHTML = searchHistory.map(h => `
+    <div class="history-item" onclick="setQueryText(${JSON.stringify(h.q)})">
+      <div class="history-dot"></div>
+      <div class="history-text">${escHtml(h.q)}</div>
+      <div class="history-time">${h.elapsed}s</div>
+    </div>
+  `).join('');
+}
+
+// ── 모달 ──────────────────────────────────────────────────────────────
+function openModal(chunkId, rank, data) {
+  const docTitle = data?.metadata?.doc_title || '의결서';
+  const section = data?.metadata?.section || '';
+  const chunkType = data?.metadata?.chunk_type || 'text';
+  const violations = data?.metadata?.violation_types || [];
+  const actions = data?.metadata?.action_types || [];
+  const text = data?.text || '';
+
+  document.getElementById('modalTitle').textContent = `#${rank} — ${docTitle}`;
+  document.getElementById('modalChunkId').textContent = chunkId;
+  document.getElementById('modalMeta').innerHTML = [
+    section ? `<span class="tag tag-section">${escHtml(section)}</span>` : '',
+    `<span class="tag ${chunkType === 'table' ? 'tag-table' : 'tag-text'}">${chunkType === 'table' ? '표' : '본문'}</span>`,
+    ...violations.map(v => `<span class="tag" style="background:#FEF3C7;color:#92400E;">${escHtml(v)}</span>`),
+    ...actions.map(a => `<span class="tag" style="background:#FEE2E2;color:#991B1B;">${escHtml(a)}</span>`),
+  ].filter(Boolean).join('');
+  document.getElementById('modalContent').textContent = text;
+
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('open');
+  }
+}
+
+// ── 로딩 상태 ──────────────────────────────────────────────────────────
+function setLoading(on) {
+  const btn = document.getElementById('searchBtn');
+  const icon = document.getElementById('btnIcon');
+  const text = document.getElementById('btnText');
+  const pw = document.getElementById('progressWrap');
+  const pf = document.getElementById('progressFill');
+  const pl = document.getElementById('progressLabel');
+  const hint = document.getElementById('shortcutHint');
+
+  if (on) {
+    btn.disabled = true;
+    icon.outerHTML = '<div class="spinner" id="btnIcon"></div>';
+    text.textContent = '검색 중...';
+    pw.style.display = 'block';
+    hint.style.display = 'none';
+
+    let p = 0;
+    window._progressTimer = setInterval(() => {
+      p = p < 85 ? p + (Math.random() * 6) : p;
+      pf.style.width = Math.min(p, 90) + '%';
+      if (p < 25) pl.textContent = '쿼리 확장 및 BM25 검색 중...';
+      else if (p < 55) pl.textContent = 'Solar 임베딩 검색 중...';
+      else pl.textContent = 'Solar-Pro 답변 생성 중...';
+    }, 300);
+  } else {
+    clearInterval(window._progressTimer);
+    pf.style.width = '100%';
+    setTimeout(() => { pw.style.display = 'none'; hint.style.display = ''; }, 400);
+    btn.disabled = false;
+    const spinEl = document.getElementById('btnIcon');
+    if (spinEl) {
+      spinEl.outerHTML = `<svg id="btnIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`;
+    }
+    text.textContent = '검색하기';
+  }
+}
+
+// ── 유틸 ──────────────────────────────────────────────────────────────
+function setQuery(btn) {
+  const ta = document.getElementById('queryInput');
+  ta.value = btn.textContent + '는?';
+  updateCharCount(ta);
+  ta.focus();
+}
+
+function setQueryText(q) {
+  const ta = document.getElementById('queryInput');
+  ta.value = q;
+  updateCharCount(ta);
+  ta.focus();
+}
+
+function updateCharCount(ta) {
+  document.getElementById('charCount').textContent = `${ta.value.length} / 500`;
+}
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderMarkdown(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^(\d+)\.\s(.+)$/gm, '<li>$2</li>')
+    .replace(/(<li>.*?<\/li>(\n|$))+/gs, match => `<ol>${match}</ol>`)
+    .replace(/^-\s(.+)$/gm, '<li>$1</li>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+}
+
+// Ctrl+Enter 검색
+document.getElementById('queryInput').addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') runQuery();
+});
+
+// ESC 모달 닫기
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+init();
+</script>
+</body>
+</html>

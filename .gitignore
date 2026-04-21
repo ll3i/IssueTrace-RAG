@@ -1,0 +1,20 @@
+# 대용량 데이터 및 모델
+AI활용데이터/
+rag_system/models/
+rag_system/index/*.npy
+rag_system/index/*.pkl
+rag_system/index/corpus.json
+rag_system/index/chroma_db/
+rag_system/submission.tar
+
+# 문서 파일 (의결서 원본 등)
+**/*.pdf
+**/*.hwp
+**/*.hwpx
+
+# Python 캐시 및 환경설정
+**/__pycache__/
+*.pyc
+.env
+.venv/
+venv/

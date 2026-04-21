@@ -1,0 +1,36 @@
+INFO:     Started server process [16760]
+INFO:     Waiting for application startup.
+2026-04-17 11:34:17,264 INFO ÆÄÀÌÇÁ¶óÀÎ ÃÊ±âÈ­ Áß...
+2026-04-17 11:34:18,876 INFO ÆÄÀÌÇÁ¶óÀÎ ÃÊ±âÈ­ ¿Ï·á
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+[Pipeline] ì´ˆê¸°í™” ì‹œì‘...
+[Corpus] ìºì‹œ ë¡œë“œ: c:\Users\SSAFY\Desktop\ê³µì •ê±°ë˜_ë°ì´í„°\rag_system\index\corpus.json
+[BM25] ë¡œë“œ ì™„ë£Œ: 31879ê°œ ì²­í¬
+[Dense] ë¡œë“œ ì™„ë£Œ: 31879ê°œ ì²­í¬, shape=(31879, 4096)
+[Pipeline] ì´ˆê¸°í™” ì™„ë£Œ [Hybrid (BM25+Dense)] (1.6s)
+INFO:     127.0.0.1:60799 - "GET /health HTTP/1.1" 200 OK
+2026-04-17 11:34:31,413 INFO HTTP Request: POST https://api.upstage.ai/v1/embeddings "HTTP/1.1 200 OK"
+2026-04-17 11:34:32,736 INFO HTTP Request: POST https://api.upstage.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-17 11:34:32,739 INFO Áú¹®: BGF¸®Å×ÀÏ À§¹İ ÇàÀ§¿Í °úÂ¡±İÀº?... | 2.11s
+INFO:     127.0.0.1:60804 - "POST /query HTTP/1.1" 200 OK
+2026-04-17 11:35:20,103 INFO HTTP Request: POST https://api.upstage.ai/v1/embeddings "HTTP/1.1 200 OK"
+2026-04-17 11:35:22,013 INFO HTTP Request: POST https://api.upstage.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-17 11:35:22,014 INFO Áú¹®: BGF¸®Å×ÀÏÀÇ ÆÇ¸ÅÃËÁøºñ¿ë À§¹İ ÇàÀ§´Â ¹«¾ùÀÎ°¡¿ä?... | 2.83s
+INFO:     127.0.0.1:56640 - "POST /query HTTP/1.1" 200 OK
+2026-04-17 11:35:25,300 INFO HTTP Request: POST https://api.upstage.ai/v1/embeddings "HTTP/1.1 200 OK"
+2026-04-17 11:35:28,198 INFO HTTP Request: POST https://api.upstage.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-17 11:35:28,199 INFO Áú¹®: ´ãÇÕ ÇàÀ§·Î ÀÎÇÑ °úÂ¡±İ ºÎ°ú »ç·Ê¸¦ ¾Ë·ÁÁÖ¼¼¿ä... | 4.14s
+INFO:     127.0.0.1:56644 - "POST /query HTTP/1.1" 200 OK
+2026-04-17 11:35:31,565 INFO HTTP Request: POST https://api.upstage.ai/v1/embeddings "HTTP/1.1 200 OK"
+2026-04-17 11:35:34,160 INFO HTTP Request: POST https://api.upstage.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-17 11:35:34,161 INFO Áú¹®: ½ÃÀåÁö¹èÀû ÁöÀ§³²¿ë ÇàÀ§¿¡ ´ëÇÑ ½ÃÁ¤¸í·É ³»¿ëÀº?... | 3.92s
+INFO:     127.0.0.1:56649 - "POST /query HTTP/1.1" 200 OK
+2026-04-17 11:35:37,087 INFO HTTP Request: POST https://api.upstage.ai/v1/embeddings "HTTP/1.1 200 OK"
+2026-04-17 11:35:40,491 INFO HTTP Request: POST https://api.upstage.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-17 11:35:40,492 INFO Áú¹®: ÇÏµµ±Ş¹ı À§¹İ ÇàÀ§¿Í Á¦Àç Á¶Ä¡´Â?... | 4.29s
+INFO:     127.0.0.1:56656 - "POST /query HTTP/1.1" 200 OK
+2026-04-17 11:35:43,665 INFO HTTP Request: POST https://api.upstage.ai/v1/embeddings "HTTP/1.1 200 OK"
+2026-04-17 11:35:46,499 INFO HTTP Request: POST https://api.upstage.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-17 11:35:46,500 INFO Áú¹®: ÀüÀÚ»ó°Å·¡ ¼ÒºñÀÚº¸È£¹ı À§¹İ »ç·Ê´Â?... | 3.97s
+INFO:     127.0.0.1:56660 - "POST /query HTTP/1.1" 200 OK

@@ -1,0 +1,23 @@
+# ── 웹 서버 ──────────────────────────────────────────────────────────────
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.9
+
+# ── 검색 ─────────────────────────────────────────────────────────────────
+rank-bm25>=0.2.2
+numpy>=1.26.0
+
+# ── 유틸 ─────────────────────────────────────────────────────────────────
+python-dotenv>=1.0.0
+tqdm>=4.66.0
+
+# ── API 클라이언트 (개발 환경 / Solar API 사용 시) ─────────────────────────
+openai>=1.50.0
+
+# ── 로컬 LLM (평가 환경 / OFFLINE_MODE=true 시 필요) ──────────────────────
+# torch는 CUDA 버전에 맞게 별도 설치 권장:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+torch>=2.2.0
+transformers>=4.45.0
+accelerate>=0.34.0
+sentencepiece>=0.2.0
