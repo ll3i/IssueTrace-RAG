@@ -23,6 +23,14 @@
 
 ![프로젝트 개요](assets/overview.svg)
 
+### 시스템 아키텍처
+
+![시스템 아키텍처](assets/architecture.svg)
+
+### 주요 결과
+
+![주요 결과](assets/results.svg)
+
 ## 주요 특징
 
 - **Hybrid Retrieval** — BM25(Sparse)와 Solar Dense 임베딩 검색을 병행하여 법률 용어의 키워드 정밀성과 의미 유사성을 동시에 확보합니다.

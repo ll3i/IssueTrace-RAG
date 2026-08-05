@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- background -->
+  <rect width="1280" height="720" fill="#F7F9FB"/>
+
+  <g font-family="'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif">
+
+    <!-- ===== Header band (0-120) ===== -->
+    <rect x="72" y="62" width="4" height="34" rx="2" fill="#1454FE"/>
+    <text x="92" y="50" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="13" letter-spacing="3" fill="#6B7686">ARCHITECTURE</text>
+    <text x="92" y="94" font-size="34" font-weight="800" letter-spacing="-0.5" fill="#161B24">IssueTrace RAG<tspan fill="#3B7AFF">.</tspan></text>
+    <text x="1208" y="50" text-anchor="end" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="13" fill="#94A0B0">ll3i · IssueTrace-RAG</text>
+
+    <!-- ===== API LAYER ===== -->
+    <rect x="72" y="140" width="744" height="124" rx="16" fill="#F0F4FF" stroke="#E2E7EE"/>
+    <text x="92" y="164" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="12" letter-spacing="2" fill="#6B7686">API LAYER</text>
+    <rect x="92" y="176" width="340" height="68" rx="10" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="108" y="204" font-size="16" font-weight="600" fill="#161B24">FastAPI 서버</text>
+    <text x="108" y="226" font-size="12" fill="#6B7686">/ask 엔드포인트 · 헬스체크</text>
+    <rect x="452" y="176" width="240" height="68" rx="10" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="468" y="204" font-size="16" font-weight="600" fill="#161B24">Uvicorn</text>
+    <text x="468" y="226" font-size="12" fill="#6B7686">ASGI 서버 런타임</text>
+
+    <!-- accent flow: API -> RETRIEVAL -->
+    <line x1="444" y1="264" x2="444" y2="288" stroke="#1454FE" stroke-width="2"/>
+    <polygon points="438,288 450,288 444,296" fill="#1454FE"/>
+
+    <!-- ===== RETRIEVAL LAYER ===== -->
+    <rect x="72" y="296" width="744" height="164" rx="16" fill="#F0F4FF" stroke="#E2E7EE"/>
+    <text x="92" y="320" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="12" letter-spacing="2" fill="#6B7686">RETRIEVAL LAYER</text>
+    <rect x="92" y="332" width="224" height="104" rx="10" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="108" y="364" font-size="15" font-weight="600" fill="#161B24">BM25 인덱스</text>
+    <text x="108" y="388" font-size="12" fill="#6B7686">공백 + 2-gram</text>
+    <text x="108" y="406" font-size="12" fill="#6B7686">토크나이저</text>
+    <rect x="332" y="332" width="224" height="104" rx="10" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="348" y="364" font-size="15" font-weight="600" fill="#161B24">Dense 임베딩 행렬</text>
+    <text x="348" y="388" font-size="12" fill="#6B7686">NumPy float16</text>
+    <text x="348" y="406" font-size="12" fill="#6B7686">31,879 × 4096</text>
+    <rect x="572" y="332" width="224" height="104" rx="10" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="588" y="364" font-size="15" font-weight="600" fill="#161B24">RRF + 리랭커</text>
+    <text x="588" y="388" font-size="12" fill="#6B7686">하이브리드 점수 융합</text>
+    <text x="588" y="406" font-size="12" fill="#6B7686">Top-5 근거 확정</text>
+
+    <!-- accent flow: RETRIEVAL -> LLM -->
+    <line x1="444" y1="460" x2="444" y2="484" stroke="#1454FE" stroke-width="2"/>
+    <polygon points="438,484 450,484 444,492" fill="#1454FE"/>
+
+    <!-- ===== LLM LAYER (ink) ===== -->
+    <rect x="72" y="492" width="744" height="164" rx="16" fill="#0B1B33"/>
+    <text x="92" y="516" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="12" letter-spacing="2" fill="#94A0B0">LLM LAYER</text>
+    <rect x="92" y="528" width="320" height="104" rx="10" fill="#102542" stroke="#16314F"/>
+    <text x="108" y="574" font-size="16" font-weight="600" fill="#EDF1F7">로컬 Qwen2.5-7B</text>
+    <text x="108" y="598" font-size="12" fill="#94A0B0">Transformers · 오프라인 추론</text>
+    <!-- dual mode connector -->
+    <line x1="428" y1="584" x2="480" y2="584" stroke="#94A0B0" stroke-width="1.5"/>
+    <polygon points="428,578 428,590 420,584" fill="#94A0B0"/>
+    <polygon points="480,578 480,590 488,584" fill="#94A0B0"/>
+    <text x="454" y="566" text-anchor="middle" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="11" fill="#CADBFF">이중 모드</text>
+    <!-- external service: dashed -->
+    <rect x="496" y="528" width="300" height="104" rx="10" fill="none" stroke="#6B7686" stroke-dasharray="6 4"/>
+    <text x="780" y="550" text-anchor="end" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="10" letter-spacing="2" fill="#94A0B0">EXTERNAL</text>
+    <text x="512" y="574" font-size="16" font-weight="600" fill="#EDF1F7">Solar-Pro API</text>
+    <text x="512" y="598" font-size="12" fill="#94A0B0">외부 LLM API · 온라인 모드</text>
+
+    <!-- ===== DATA ===== -->
+    <rect x="856" y="140" width="352" height="216" rx="16" fill="#F0F3F7" stroke="#E2E7EE"/>
+    <text x="876" y="164" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="12" letter-spacing="2" fill="#6B7686">DATA</text>
+    <rect x="876" y="176" width="312" height="64" rx="10" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="892" y="202" font-size="15" font-weight="600" fill="#161B24">공정위 의결서</text>
+    <text x="892" y="224" font-size="12" fill="#6B7686">원문 500건</text>
+    <line x1="1032" y1="240" x2="1032" y2="260" stroke="#C7CFDA" stroke-width="1.5"/>
+    <polygon points="1026,260 1038,260 1032,268" fill="#C7CFDA"/>
+    <rect x="876" y="268" width="312" height="64" rx="10" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="892" y="294" font-size="15" font-weight="600" fill="#161B24">청킹 파이프라인</text>
+    <text x="892" y="316" font-size="12" fill="#6B7686">31,879개 청크 생성</text>
+
+    <!-- DATA -> RETRIEVAL -->
+    <line x1="856" y1="330" x2="828" y2="330" stroke="#C7CFDA" stroke-width="1.5"/>
+    <polygon points="828,324 828,336 818,330" fill="#C7CFDA"/>
+
+    <!-- ===== DEPLOYMENT ===== -->
+    <rect x="856" y="492" width="352" height="164" rx="16" fill="#F0F3F7" stroke="#E2E7EE"/>
+    <text x="876" y="516" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="12" letter-spacing="2" fill="#6B7686">DEPLOYMENT</text>
+    <rect x="876" y="528" width="312" height="104" rx="10" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="892" y="568" font-size="15" font-weight="600" fill="#161B24">Docker 오프라인 이미지</text>
+    <text x="892" y="592" font-size="12" fill="#6B7686">모델 번들 포함</text>
+    <text x="892" y="610" font-size="12" fill="#6B7686">네트워크 차단 환경 실행</text>
+
+    <!-- ===== Footer ===== -->
+    <line x1="72" y1="680" x2="1208" y2="680" stroke="#C7CFDA" stroke-width="1"/>
+    <text x="72" y="704" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="12" fill="#94A0B0">FastAPI · Uvicorn · BM25(공백+2-gram) · float16 31,879×4096 · RRF · Qwen2.5-7B / Solar-Pro · Docker offline</text>
+  </g>
+</svg>

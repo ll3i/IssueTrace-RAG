@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1280" height="560" viewBox="0 0 1280 560" xmlns="http://www.w3.org/2000/svg">
+  <!-- background -->
+  <rect width="1280" height="560" fill="#F7F9FB"/>
+
+  <g font-family="'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif">
+
+    <!-- ===== Header band (0-120) ===== -->
+    <rect x="72" y="62" width="4" height="34" rx="2" fill="#1454FE"/>
+    <text x="92" y="50" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="13" letter-spacing="3" fill="#6B7686">RESULTS</text>
+    <text x="92" y="94" font-size="34" font-weight="800" letter-spacing="-0.5" fill="#161B24">IssueTrace RAG<tspan fill="#3B7AFF">.</tspan></text>
+    <text x="1208" y="50" text-anchor="end" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="13" fill="#94A0B0">ll3i · IssueTrace-RAG</text>
+
+    <!-- ===== Metric tiles ===== -->
+    <rect x="72" y="152" width="266" height="156" rx="14" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="96" y="236" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="42" font-weight="700" fill="#1454FE">500<tspan font-size="22" dx="4">건</tspan></text>
+    <text x="96" y="276" font-size="13" fill="#6B7686">의결서 인덱싱</text>
+
+    <rect x="362" y="152" width="266" height="156" rx="14" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="386" y="236" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="42" font-weight="700" fill="#1454FE">31,879</text>
+    <text x="386" y="276" font-size="13" fill="#6B7686">청크</text>
+
+    <rect x="652" y="152" width="266" height="156" rx="14" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <text x="676" y="236" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="42" font-weight="700" fill="#1454FE">Top-5</text>
+    <text x="676" y="276" font-size="13" fill="#6B7686">근거 확정</text>
+
+    <rect x="942" y="152" width="266" height="156" rx="14" fill="#FFFFFF" stroke="#E2E7EE"/>
+    <circle cx="986" cy="220" r="20" fill="#1454FE"/>
+    <polyline points="976,220 983,227 996,212" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="966" y="276" font-size="13" fill="#6B7686">완전 오프라인 동작</text>
+
+    <!-- ===== Deliverables ===== -->
+    <text x="72" y="364" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="12" letter-spacing="2" fill="#6B7686">DELIVERABLES</text>
+
+    <rect x="72" y="382" width="152" height="38" rx="19" fill="#F0F4FF"/>
+    <text x="148" y="406" text-anchor="middle" font-size="13" fill="#16314F">Docker 제출 이미지</text>
+
+    <rect x="240" y="382" width="118" height="38" rx="19" fill="#F0F4FF"/>
+    <text x="299" y="406" text-anchor="middle" font-size="13" fill="#16314F">FastAPI 서버</text>
+
+    <rect x="374" y="382" width="142" height="38" rx="19" fill="#F0F4FF"/>
+    <text x="445" y="406" text-anchor="middle" font-size="13" fill="#16314F">하이브리드 인덱스</text>
+
+    <rect x="532" y="382" width="336" height="38" rx="19" fill="#F0F4FF"/>
+    <text x="700" y="406" text-anchor="middle" font-size="13" fill="#16314F">제2회 공정위 AI·데이터 활용 공모전 Track 2 출품</text>
+
+    <!-- ===== Footer ===== -->
+    <line x1="72" y1="492" x2="1208" y2="492" stroke="#C7CFDA" stroke-width="1"/>
+    <text x="72" y="518" font-family="'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace" font-size="12" fill="#94A0B0">공정위 의결서 500건 → 청크 31,879 · Hybrid(BM25+Dense, RRF) · Top-5 evidence · Docker offline image</text>
+  </g>
+</svg>
