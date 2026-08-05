@@ -1,0 +1,110 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="IssueTrace RAG overview">
+  <style>
+    .sans { font-family: 'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif; }
+    .mono { font-family: 'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace; }
+    .eyebrow { font-size: 13px; font-weight: 500; letter-spacing: 3px; fill: #1454FE; }
+    .title   { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; fill: #161B24; }
+    .dot     { fill: #3B7AFF; }
+    .meta    { font-size: 13px; fill: #94A0B0; }
+    .step    { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; fill: #3B7AFF; }
+    .stepS   { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; fill: #3B7AFF; }
+    .h  { font-size: 20px; font-weight: 700; fill: #161B24; }
+    .hS { font-size: 17px; font-weight: 700; fill: #161B24; }
+    .d  { font-size: 13.5px; font-weight: 400; fill: #6B7686; }
+    .dS { font-size: 11.5px; font-weight: 400; fill: #6B7686; }
+    .inkStep { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; fill: #CADBFF; }
+    .inkH { font-size: 20px; font-weight: 700; fill: #EDF1F7; }
+    .inkD { font-size: 13.5px; font-weight: 400; fill: #CADBFF; }
+    .foot { font-size: 12px; fill: #94A0B0; }
+    .card { fill: #FFFFFF; stroke: #E2E7EE; stroke-width: 1; }
+    .ink  { fill: #0B1B33; }
+    .flow { fill: none; stroke: #C7CFDA; stroke-width: 1.5; }
+    .flowA { fill: none; stroke: #1454FE; stroke-width: 2; }
+    .tri  { fill: #C7CFDA; }
+    .triA { fill: #1454FE; }
+  </style>
+
+  <!-- background -->
+  <rect x="0" y="0" width="1280" height="640" fill="#F7F9FB"/>
+
+  <!-- header band -->
+  <rect x="72" y="58" width="4" height="34" rx="2" fill="#1454FE"/>
+  <text class="mono eyebrow" x="90" y="48">RAG · LLM</text>
+  <text class="sans title" x="90" y="88">IssueTrace RAG<tspan class="dot">.</tspan></text>
+  <text class="mono meta" x="1208" y="88" text-anchor="end">ll3i · IssueTrace-RAG</text>
+
+  <!-- ========== ROW 1 ========== -->
+  <!-- STEP 01 : query expansion -->
+  <rect class="card" x="72" y="150" width="340" height="170" rx="14"/>
+  <text class="mono step" x="96" y="192">STEP 01</text>
+  <text class="sans h" x="96" y="228">쿼리 확장</text>
+  <text class="sans d" x="96" y="258">공정거래 도메인 키워드로</text>
+  <text class="sans d" x="96" y="279">검색 질의 확장</text>
+
+  <!-- fork arrows : STEP 01 -> parallel retrieval -->
+  <path class="flow" d="M412,235 H438 V190 H462"/>
+  <path class="flow" d="M438,235 V280 H462"/>
+  <polygon class="tri" points="462,185 470,190 462,195"/>
+  <polygon class="tri" points="462,275 470,280 462,285"/>
+
+  <!-- STEP 02 : parallel retrieval (2 cards) -->
+  <rect class="card" x="470" y="150" width="340" height="80" rx="14"/>
+  <text class="mono stepS" x="494" y="173">STEP 02 · SPARSE</text>
+  <text class="sans hS" x="494" y="199">BM25 Sparse 검색 Top-20</text>
+  <text class="sans dS" x="494" y="218">키워드 정확 일치 기반</text>
+
+  <rect class="card" x="470" y="240" width="340" height="80" rx="14"/>
+  <text class="mono stepS" x="494" y="263">STEP 02 · DENSE</text>
+  <text class="sans hS" x="494" y="289">Solar Dense 임베딩 Top-20</text>
+  <text class="sans dS" x="494" y="308">의미 유사도 기반 검색</text>
+
+  <!-- merge arrows : parallel -> RRF -->
+  <path class="flow" d="M810,190 H842 V280 H810"/>
+  <path class="flow" d="M842,235 H860"/>
+  <polygon class="tri" points="860,230 868,235 860,240"/>
+
+  <!-- STEP 03 : RRF fusion -->
+  <rect class="card" x="868" y="150" width="340" height="170" rx="14"/>
+  <text class="mono step" x="892" y="192">STEP 03</text>
+  <text class="sans h" x="892" y="228">RRF 결합 (k=60)</text>
+  <text class="sans d" x="892" y="258">Reciprocal Rank Fusion으로</text>
+  <text class="sans d" x="892" y="279">양쪽 검색 결과 순위 통합</text>
+
+  <!-- serpentine connector : row 1 -> row 2 -->
+  <path class="flow" d="M1038,320 V344 H242 V364"/>
+  <polygon class="tri" points="237,364 247,364 242,372"/>
+
+  <!-- ========== ROW 2 ========== -->
+  <!-- STEP 04 : reranking -->
+  <rect class="card" x="72" y="372" width="340" height="160" rx="14"/>
+  <text class="mono step" x="96" y="410">STEP 04</text>
+  <text class="sans h" x="96" y="444">solar-rerank-1 리랭킹</text>
+  <text class="sans d" x="96" y="474">교차 인코더로 후보 청크</text>
+  <text class="sans d" x="96" y="495">관련도 재정렬</text>
+
+  <!-- arrow : STEP 04 -> STEP 05 -->
+  <path class="flow" d="M412,452 H462"/>
+  <polygon class="tri" points="462,447 470,452 462,457"/>
+
+  <!-- STEP 05 : top-5 evidence -->
+  <rect class="card" x="470" y="372" width="340" height="160" rx="14"/>
+  <text class="mono step" x="494" y="410">STEP 05</text>
+  <text class="sans h" x="494" y="444">Top-5 근거 확정</text>
+  <text class="sans d" x="494" y="474">리랭킹 상위 5개 청크를</text>
+  <text class="sans d" x="494" y="495">답변 근거로 확정</text>
+
+  <!-- accent arrow : STEP 05 -> STEP 06 -->
+  <path class="flowA" d="M810,452 H858"/>
+  <polygon class="triA" points="858,446 868,452 858,458"/>
+
+  <!-- STEP 06 : answer generation (ink card) -->
+  <rect class="ink" x="868" y="372" width="340" height="160" rx="14"/>
+  <text class="mono inkStep" x="892" y="410">STEP 06</text>
+  <text class="sans inkH" x="892" y="444">답변 생성</text>
+  <text class="sans inkD" x="892" y="474">Solar-Pro API / 로컬 Qwen2.5-7B</text>
+  <text class="sans inkD" x="892" y="495">이중 모드</text>
+
+  <!-- footer data line -->
+  <line x1="72" y1="596" x2="1208" y2="596" stroke="#C7CFDA" stroke-width="1"/>
+  <text class="mono foot" x="72" y="622">Python · FastAPI · rank-bm25 · NumPy float16 · Docker offline · 의결서 500건 / 31,879 청크</text>
+</svg>
