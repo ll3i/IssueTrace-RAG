@@ -1,3 +1,5 @@
+![banner](assets/banner.svg)
+
 # IssueTrace RAG
 
 **공정거래위원회 의결서 쟁점 추출 기반 Hybrid RAG 질의응답 시스템**
